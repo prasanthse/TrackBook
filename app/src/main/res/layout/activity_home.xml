@@ -51,4 +51,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/logout" />
+
+    <ImageButton
+        android:id="@+id/qrScanner"
+        android:layout_width="59dp"
+        android:layout_height="55dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:background="@android:color/transparent"
+        android:scaleType="fitCenter"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/qr_scanner" />
 </android.support.constraint.ConstraintLayout>
