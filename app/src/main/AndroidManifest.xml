@@ -20,6 +20,7 @@
         <activity android:name=".LoginActivity" />
         <activity android:name=".SignUpActivity" />
         <activity android:name=".BookingActivity" />
+        <activity android:name=".HistoryActivity"></activity>
     </application>
 
 </manifest>
