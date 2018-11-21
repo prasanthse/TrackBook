@@ -23,7 +23,8 @@ public class BookingActivity extends AppCompatActivity {
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Toast
+                ToastMessage objToastBooked = new ToastMessage("Your Booking was successfull",getApplicationContext());
+
                 Intent intent = new Intent(BookingActivity.this, HomeActivity.class);
                 startActivity(intent);
             }
@@ -32,6 +33,8 @@ public class BookingActivity extends AppCompatActivity {
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ToastMessage objToastBookingCancel = new ToastMessage("Booking canceled!",getApplicationContext());
+
                 Intent intent = new Intent(BookingActivity.this, HomeActivity.class);
                 startActivity(intent);
             }

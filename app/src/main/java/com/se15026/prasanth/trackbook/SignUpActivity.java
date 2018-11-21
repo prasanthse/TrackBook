@@ -17,12 +17,21 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     public void changeActivity(){
-        Button signUp = (Button)findViewById(R.id.cancel);
-        signUp.setOnClickListener(new View.OnClickListener() {
+        Button signUpCancel = (Button)findViewById(R.id.cancel);
+        Button createAccount = (Button) findViewById(R.id.createAccount);
+
+        signUpCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
                 startActivity(intent);
+            }
+        });
+
+        createAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ToastMessage objToastAccountCreate = new ToastMessage("Hi Prasanth, your account is created",getApplicationContext());
             }
         });
     }
