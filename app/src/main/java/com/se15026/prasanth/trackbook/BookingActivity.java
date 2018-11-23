@@ -33,10 +33,12 @@ public class BookingActivity extends AppCompatActivity {
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ToastMessage objToastBookingCancel = new ToastMessage("Booking canceled!",getApplicationContext());
+                //ToastMessage objToastBookingCancel = new ToastMessage("Booking canceled!",getApplicationContext());
 
-                Intent intent = new Intent(BookingActivity.this, HomeActivity.class);
-                startActivity(intent);
+                //Intent intent = new Intent(BookingActivity.this, HomeActivity.class);
+                //startActivity(intent);
+
+                AlertBoxAppear alertBoxAppear = new AlertBoxAppear(BookingActivity.this, HomeActivity.class);
             }
         });
     }
