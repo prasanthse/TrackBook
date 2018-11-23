@@ -101,7 +101,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="28dp"
         android:layout_marginLeft="28dp"
-        android:layout_marginTop="225dp"
+        android:layout_marginTop="224dp"
         android:text="Start Station"
         android:textColor="@color/colorAccent"
         android:textSize="18sp"
@@ -113,15 +113,12 @@
         android:id="@+id/endStation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="28dp"
-        android:layout_marginLeft="28dp"
-        android:layout_marginTop="8dp"
         android:text="End Station"
         android:textColor="@color/colorAccent"
         android:textSize="18sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/startStation" />
+        tools:layout_editor_absoluteX="28dp"
+        tools:layout_editor_absoluteY="253dp" />
 
     <TextView
         android:id="@+id/time"
@@ -129,7 +126,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="28dp"
         android:layout_marginLeft="28dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="6dp"
         android:text="Time"
         android:textColor="@color/colorAccent"
         android:textSize="18sp"
@@ -143,7 +140,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="28dp"
         android:layout_marginLeft="28dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="6dp"
         android:text="Date"
         android:textColor="@color/colorAccent"
         android:textSize="18sp"
@@ -157,7 +154,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="28dp"
         android:layout_marginLeft="28dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="7dp"
         android:text="Class"
         android:textColor="@color/colorAccent"
         android:textSize="18sp"
@@ -171,7 +168,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="28dp"
         android:layout_marginLeft="28dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="7dp"
         android:text="Number of Seats"
         android:textColor="@color/colorAccent"
         android:textSize="18sp"
@@ -182,40 +179,40 @@
     <RadioButton
         android:id="@+id/firstClass"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="124dp"
-        android:layout_marginLeft="124dp"
-        android:layout_marginBottom="48dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="136dp"
+        android:layout_marginLeft="136dp"
+        android:layout_marginTop="348dp"
         android:text="1st"
         android:textColor="@color/colorAccent"
         android:textSize="18sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/cardNumber"
-        app:layout_constraintStart_toEndOf="@+id/box" />
+        app:layout_constraintStart_toEndOf="@+id/box"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <RadioButton
         android:id="@+id/secondClass"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginBottom="48dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="348dp"
         android:checked="true"
         android:clickable="false"
         android:text="2nd"
         android:textColor="@color/colorAccent"
         android:textSize="18sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/cardNumber"
-        app:layout_constraintStart_toEndOf="@+id/firstClass" />
+        app:layout_constraintStart_toEndOf="@+id/firstClass"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/card"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="28dp"
-        android:layout_marginLeft="28dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginTop="28dp"
         android:text="Credit  / Debit Card #"
         android:textColor="@color/colorAccent"
         android:textSize="18sp"
@@ -290,5 +287,66 @@
         android:inputType="number"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+
+    <Spinner
+        android:id="@+id/startDropdown"
+        android:layout_width="160dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="224dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@color/colorPrimary"
+        android:spinnerMode="dropdown"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"></Spinner>
+
+    <Spinner
+        android:id="@+id/endDropdown"
+        android:layout_width="160dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="255dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@color/colorPrimary"
+        android:spinnerMode="dropdown"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"></Spinner>
+
+    <Spinner
+        android:id="@+id/timeDropdown"
+        android:layout_width="160dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="286dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@color/colorPrimary"
+        android:spinnerMode="dropdown"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"></Spinner>
+
+    <Spinner
+        android:id="@+id/dateDropdown"
+        android:layout_width="160dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="317dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@color/colorPrimary"
+        android:spinnerMode="dropdown"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"></Spinner>
+
+    <Spinner
+        android:id="@+id/seatsDropdown"
+        android:layout_width="45dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="379dp"
+        android:layout_marginEnd="131dp"
+        android:layout_marginRight="131dp"
+        android:background="@color/colorPrimary"
+        android:spinnerMode="dropdown"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"></Spinner>
 
 </android.support.constraint.ConstraintLayout>
