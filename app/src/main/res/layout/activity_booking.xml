@@ -242,6 +242,7 @@
         android:layout_marginLeft="100dp"
         android:layout_marginBottom="16dp"
         android:background="@color/colorPrimaryDark"
+        android:clickable="true"
         android:text="Submit"
         android:textColor="@color/colorAccent"
         android:textStyle="bold"
@@ -256,6 +257,7 @@
         android:layout_marginRight="100dp"
         android:layout_marginBottom="16dp"
         android:background="@color/colorPrimaryDark"
+        android:clickable="true"
         android:text="Cancel"
         android:textColor="@color/colorAccent"
         android:textStyle="bold"
@@ -298,6 +300,7 @@
         android:layout_marginRight="16dp"
         android:background="@color/colorPrimary"
         android:spinnerMode="dropdown"
+        android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"></Spinner>
 
@@ -310,6 +313,7 @@
         android:layout_marginRight="16dp"
         android:background="@color/colorPrimary"
         android:spinnerMode="dropdown"
+        android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"></Spinner>
 
@@ -322,6 +326,7 @@
         android:layout_marginRight="16dp"
         android:background="@color/colorPrimary"
         android:spinnerMode="dropdown"
+        android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"></Spinner>
 
@@ -334,6 +339,7 @@
         android:layout_marginRight="16dp"
         android:background="@color/colorPrimary"
         android:spinnerMode="dropdown"
+        android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"></Spinner>
 
@@ -346,6 +352,7 @@
         android:layout_marginRight="131dp"
         android:background="@color/colorPrimary"
         android:spinnerMode="dropdown"
+        android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"></Spinner>
 

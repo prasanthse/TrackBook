@@ -105,6 +105,7 @@
         android:layout_marginRight="8dp"
         android:layout_marginBottom="16dp"
         android:background="@color/colorPrimaryDark"
+        android:clickable="true"
         android:text="Home"
         android:textColor="@color/colorAccent"
         android:textStyle="bold"
