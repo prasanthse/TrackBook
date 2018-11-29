@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "945397288407",
+    "firebase_url": "https://track-book-e59b9.firebaseio.com",
+    "project_id": "track-book-e59b9",
+    "storage_bucket": "track-book-e59b9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:945397288407:android:9f54645788749e96",
+        "android_client_info": {
+          "package_name": "com.se15026.prasanth.trackbook"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "945397288407-kgufukpdqdcnihvcusn8clet1mk5evpf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.se15026.prasanth.trackbook",
+            "certificate_hash": "f0de8a3b265702501c7c0d47c4bd28e22af2653c"
+          }
+        },
+        {
+          "client_id": "945397288407-9v0lvt5h2ehie9qbg1uaoqni34m5fcg2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDF0mhbV84GdK3uffwUFFk3jaRranyB3Us"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "945397288407-9v0lvt5h2ehie9qbg1uaoqni34m5fcg2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
