@@ -14,15 +14,20 @@ public class SignUpActivity extends AppCompatActivity {
 
     private DatabaseReference database;
 
-    private Button signUpCancel = (Button)findViewById(R.id.cancel);
-    private Button createAccount = (Button) findViewById(R.id.createAccount);
-    private EditText nameTxt = (EditText) findViewById(R.id.name);
-    private EditText phoneTxt = (EditText) findViewById(R.id.phone);
+    private Button signUpCancel;
+    private Button createAccount;
+    private EditText nameTxt;
+    private EditText phoneTxt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
+
+        signUpCancel = (Button)findViewById(R.id.cancel);
+        createAccount = (Button) findViewById(R.id.createAccount);
+        nameTxt = (EditText) findViewById(R.id.name);
+        phoneTxt = (EditText) findViewById(R.id.phone);
 
         database = FirebaseDatabase.getInstance().getReference();
 
@@ -40,7 +45,8 @@ public class SignUpActivity extends AppCompatActivity {
                 String userName = nameTxt.getText().toString().trim();
                 String userPhoneNumber = phoneTxt.getText().toString().trim();
 
-                database.child("Login").child(userPhoneNumber).setValue(userName);
+                DatabaseReference loginRef = database.child("Login");
+                loginRef.child(userPhoneNumber).setValue(userName);
 
                 ToastMessage objToastAccountCreate = new ToastMessage("Hi "+userName+", your account is created",getApplicationContext());
                 backToHome();

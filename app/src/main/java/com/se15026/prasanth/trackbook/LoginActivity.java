@@ -18,14 +18,18 @@ public class LoginActivity extends AppCompatActivity {
 
     private DatabaseReference databaseReference;
 
-    private Button signUp = (Button)findViewById(R.id.signUpBtn);
-    private Button loginBtn = (Button) findViewById(R.id.loginBtn);
-    private EditText phoneTxt = (EditText) findViewById(R.id.phoneNumber);
+    private Button signUp;
+    private Button loginBtn;
+    private EditText phoneTxt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        signUp = (Button)findViewById(R.id.signUpBtn);
+        loginBtn = (Button) findViewById(R.id.loginBtn);
+        phoneTxt = (EditText) findViewById(R.id.phoneNumber);
 
         databaseReference = FirebaseDatabase.getInstance().getReference().child("Login");
 
@@ -47,9 +51,9 @@ public class LoginActivity extends AppCompatActivity {
                         String phoneDb = dataSnapshot.getValue().toString();
                         String pboneInput = phoneTxt.getText().toString().trim();
 
-                        boolean result = comparission(phoneDb, pboneInput);
+                        //boolean result = comparission(phoneDb, pboneInput);
 
-                        compareDecision(result);
+                        //compareDecision(result);
                     }
 
                     @Override
@@ -61,7 +65,7 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private boolean comparission(String original, String given){
+    /*private boolean comparission(String original, String given){
         //need to add as loop after working
         if(given.equals(original)){
             return  true;
@@ -78,6 +82,6 @@ public class LoginActivity extends AppCompatActivity {
         }else{
             ToastMessage objToastFailure = new ToastMessage("Login failure! Make sure your phone number is correct or Create a new account",getApplicationContext());
         }
-    }
+    }*/
 
 }
