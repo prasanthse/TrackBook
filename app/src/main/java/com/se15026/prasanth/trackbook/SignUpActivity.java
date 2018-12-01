@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -35,6 +36,9 @@ public class SignUpActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //alertDialog
+                Toast toast = Toast.makeText(getApplicationContext(), "Account creation cancelled", Toast.LENGTH_SHORT);
+                toast.show();
+
                 backToHome();
             }
         });
@@ -48,7 +52,9 @@ public class SignUpActivity extends AppCompatActivity {
                 DatabaseReference loginRef = database.child("Login");
                 loginRef.child(userPhoneNumber).setValue(userName);
 
-                ToastMessage objToastAccountCreate = new ToastMessage("Hi "+userName+", your account is created",getApplicationContext());
+                Toast toast = Toast.makeText(getApplicationContext(), "Hi "+userName+", your account is created", Toast.LENGTH_LONG);
+                toast.show();
+
                 backToHome();
             }
         });
