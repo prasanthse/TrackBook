@@ -5,8 +5,12 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 public class BookingActivity extends AppCompatActivity {
+
+    private Button submitBtn;
+    private Button cancelBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,13 +21,14 @@ public class BookingActivity extends AppCompatActivity {
     }
 
     public void bookingLinks(){
-        Button submitBtn = (Button) findViewById(R.id.submit);
-        Button cancelBtn = (Button) findViewById(R.id.cancel);
+        submitBtn = (Button) findViewById(R.id.submit);
+        cancelBtn = (Button) findViewById(R.id.cancel);
 
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ToastMessage objToastBooked = new ToastMessage("Your Booking was successfull",getApplicationContext());
+                Toast toast = Toast.makeText(getApplicationContext(), "Your Booking was successful", Toast.LENGTH_SHORT);
+                toast.show();
 
                 Intent intent = new Intent(BookingActivity.this, HomeActivity.class);
                 startActivity(intent);
@@ -33,12 +38,13 @@ public class BookingActivity extends AppCompatActivity {
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //ToastMessage objToastBookingCancel = new ToastMessage("Booking canceled!",getApplicationContext());
 
-                //Intent intent = new Intent(BookingActivity.this, HomeActivity.class);
-                //startActivity(intent);
+                //Alertbox
+                Toast toast = Toast.makeText(getApplicationContext(), "Your Booking was canceled", Toast.LENGTH_SHORT);
+                toast.show();
 
-                AlertBoxAppear alertBoxAppear = new AlertBoxAppear(BookingActivity.this, HomeActivity.class);
+                Intent intent = new Intent(BookingActivity.this, HomeActivity.class);
+                startActivity(intent);
             }
         });
     }

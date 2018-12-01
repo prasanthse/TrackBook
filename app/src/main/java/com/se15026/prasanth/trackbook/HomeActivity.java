@@ -8,6 +8,11 @@ import android.widget.ImageButton;
 
 public class HomeActivity extends AppCompatActivity {
 
+    private ImageButton bookingBtn;
+    private ImageButton historyBtn;
+    private ImageButton logoutBtn;
+    private ImageButton qrScannerBtn;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -17,10 +22,10 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     public void enterNewActivity(){
-        ImageButton bookingBtn = (ImageButton) findViewById(R.id.booking);
-        ImageButton historyBtn = (ImageButton) findViewById(R.id.history);
-        ImageButton logoutBtn = (ImageButton) findViewById(R.id.logout);
-        ImageButton qrScannerBtn = (ImageButton) findViewById(R.id.qrScanner);
+        bookingBtn = (ImageButton) findViewById(R.id.booking);
+        historyBtn = (ImageButton) findViewById(R.id.history);
+        logoutBtn = (ImageButton) findViewById(R.id.logout);
+        qrScannerBtn = (ImageButton) findViewById(R.id.qrScanner);
 
         bookingBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -41,6 +46,8 @@ public class HomeActivity extends AppCompatActivity {
         logoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                //Dialog Alert
                 finish();
                 System.exit(0);
             }

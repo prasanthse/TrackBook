@@ -8,6 +8,8 @@ import android.widget.Button;
 
 public class HistoryActivity extends AppCompatActivity {
 
+    private Button homeBtn;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -17,7 +19,8 @@ public class HistoryActivity extends AppCompatActivity {
     }
 
     public void backToHome(){
-        Button homeBtn = (Button) findViewById(R.id.homeBtn);
+        homeBtn = (Button) findViewById(R.id.homeBtn);
+
         homeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
