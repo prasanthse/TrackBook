@@ -25,9 +25,7 @@ public class LoginActivity extends AppCompatActivity {
     private Button loginBtn;
     private EditText phoneTxt;
 
-    private ArrayList<String> loginPhoneNumbers= new ArrayList<>();
-
-    private String phoneInput;
+    private ArrayList<LoginInfo> loginPhoneNumbers= new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,9 +61,18 @@ public class LoginActivity extends AppCompatActivity {
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
                 for(DataSnapshot data : dataSnapshot.getChildren()){
-                    String name = data.getValue(String.class);
-                    loginPhoneNumbers.add(name);
+
+                    String name = data.child("name").getValue(String.class);
+                    String number = data.child("number").getValue(String.class);
+
+                    LoginInfo info = new LoginInfo();
+
+                    info.setName(name);
+                    info.setNumber(number);
+
+                    loginPhoneNumbers.add(info);
                 }
             }
 
@@ -81,11 +88,9 @@ public class LoginActivity extends AppCompatActivity {
         String numberInput = phoneTxt.getText().toString().trim();
         boolean decision = false;
 
-        for (String number : loginPhoneNumbers){
-            if(numberInput.equals(number)){
+        for (LoginInfo checkInfo : loginPhoneNumbers){
+            if(numberInput.equals(checkInfo.getNumber())){
                 decision = true;
-                Toast toast = Toast.makeText(getApplicationContext(), "" + number, Toast.LENGTH_SHORT);
-                toast.show();
                 break;
             }
         }

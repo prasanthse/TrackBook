@@ -30,7 +30,7 @@ public class SignUpActivity extends AppCompatActivity {
         nameTxt = (EditText) findViewById(R.id.name);
         phoneTxt = (EditText) findViewById(R.id.phone);
 
-        database = FirebaseDatabase.getInstance().getReference();
+        database = FirebaseDatabase.getInstance().getReference().child("Login");
 
         signUpCancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,8 +49,8 @@ public class SignUpActivity extends AppCompatActivity {
                 String userName = nameTxt.getText().toString().trim();
                 String userPhoneNumber = phoneTxt.getText().toString().trim();
 
-                DatabaseReference loginRef = database.child("Login");
-                loginRef.child(userPhoneNumber).setValue(userName);
+                database.child(userPhoneNumber).child("name").setValue(userName);
+                database.child(userPhoneNumber).child("number").setValue(userPhoneNumber);
 
                 Toast toast = Toast.makeText(getApplicationContext(), "Hi "+userName+", your account is created", Toast.LENGTH_LONG);
                 toast.show();
