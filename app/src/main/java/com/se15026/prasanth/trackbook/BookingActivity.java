@@ -18,6 +18,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class BookingActivity extends AppCompatActivity {
 
@@ -32,7 +33,16 @@ public class BookingActivity extends AppCompatActivity {
 
     private DatabaseReference databaseReference;
 
-    ArrayList<String> stationsList = new ArrayList<>();
+    List<String> stationsList = new ArrayList<>();
+    List<String> timeList = new ArrayList<>();
+
+    BookingInfo bookingInfo = new BookingInfo();
+
+    private String startStation;
+    private String endStation;
+
+    private int stationNumber = 1; //to identify the station key
+    private String testStationName; //to declare station name
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +62,7 @@ public class BookingActivity extends AppCompatActivity {
 
         retrieveStations();
 
-        ArrayAdapter<String> stationAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, stationsList);
+        ArrayAdapter<String> stationAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1, stationsList);
         stationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         start.setAdapter(stationAdapter);
@@ -90,23 +100,17 @@ public class BookingActivity extends AppCompatActivity {
         start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                bookingInfo.setStartingStation(start.getSelectedItem().toString());
             }
         });
 
-       /* end.setOnClickListener(new View.OnClickListener() {
+        end.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //end.setAdapter(stationAdapter);
+                bookingInfo.setEndStation(end.getSelectedItem().toString());
+                stationValidation();
             }
         });
-
-        time.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });*/
 
     }
 
@@ -128,5 +132,109 @@ public class BookingActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    public void stationValidation(){
+
+        if(startStation.equals(endStation) || startStation.equals(null) || endStation.equals(null)){
+            Toast toast = Toast.makeText(getApplicationContext(), "Please make sure you select two different stations", Toast.LENGTH_LONG);
+            toast.show();
+
+        }else{
+
+            time.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    bookingInfo.setStartingStation(getStartStation());
+                    bookingInfo.setEndStation(getEndStation());
+
+                    retrieveTime();
+                }
+            });
+
+        }
+    }
+
+    public void retrieveTime(){
+
+        String start = Integer.toString(retrieveStationNumber(getStartStation()));
+        String end = Integer.toString(retrieveStationNumber(getEndStation()));
+
+        databaseReference.child("Time").child(start).child(end).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot time : dataSnapshot.getChildren()){
+                    String timeSlot = time.getValue(String.class);
+                    timeList.add(timeSlot);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        ArrayAdapter<String> timeAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1, timeList);
+        timeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        time.setAdapter(timeAdapter);
+
+        time.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bookingInfo.setTime(time.getSelectedItem().toString());
+            }
+        });
+
+        dateChoose();
+    }
+
+    public void dateChoose(){
+
+
+    }
+
+    public int retrieveStationNumber(String name){
+
+        testStationName = name;
+
+        databaseReference.child("Stations").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot stationName : dataSnapshot.getChildren()){
+                    if(testStationName.equals(stationName)){
+                        break;
+                    }else{
+                        stationNumber = stationNumber + 1;
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        return stationNumber;
+    }
+
+    public String getStartStation() {
+        return startStation;
+    }
+
+    public void setStartStation(String startStation) {
+        this.startStation = startStation;
+    }
+
+    public String getEndStation() {
+        return endStation;
+    }
+
+    public void setEndStation(String endStation) {
+        this.endStation = endStation;
     }
 }

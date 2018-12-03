@@ -4,6 +4,8 @@ import java.util.Date;
 
 public class BookingInfo {
 
+    private String name;
+    private String phoneNumber;
     private String startingStation;
     private String endStation;
     private String time;
@@ -14,13 +16,15 @@ public class BookingInfo {
     public BookingInfo() {
     }
 
-    public BookingInfo(String startingStation, String endStation, String time, Date date, int bookedClass, int seat) {
+    public BookingInfo(String startingStation, String endStation, String time, Date date, int bookedClass, int seat, String name, String phoneNumber) {
         this.startingStation = startingStation;
         this.endStation = endStation;
         this.time = time;
         this.date = date;
         this.bookedClass = bookedClass;
         this.seat = seat;
+        this.name = name;
+        this.phoneNumber = phoneNumber;
     }
 
     public String getStartingStation() {
@@ -69,5 +73,21 @@ public class BookingInfo {
 
     public void setSeat(int seat) {
         this.seat = seat;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 }
