@@ -18,14 +18,15 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        enterNewActivity();
-    }
-
-    public void enterNewActivity(){
         bookingBtn = (ImageButton) findViewById(R.id.booking);
         historyBtn = (ImageButton) findViewById(R.id.history);
         logoutBtn = (ImageButton) findViewById(R.id.logout);
         qrScannerBtn = (ImageButton) findViewById(R.id.qrScanner);
+
+        enterNewActivity();
+    }
+
+    public void enterNewActivity(){
 
         bookingBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -38,7 +39,7 @@ public class HomeActivity extends AppCompatActivity {
         historyBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(HomeActivity.this, HomeActivity.class);
+                Intent intent = new Intent(HomeActivity.this, HistoryActivity.class);
                 startActivity(intent);
             }
         });
@@ -46,10 +47,9 @@ public class HomeActivity extends AppCompatActivity {
         logoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 //Dialog Alert
-                finish();
-                System.exit(0);
+                android.os.Process.killProcess(android.os.Process.myPid());
+                System.exit(1);
             }
         });
 
