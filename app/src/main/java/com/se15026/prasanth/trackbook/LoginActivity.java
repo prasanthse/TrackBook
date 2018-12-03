@@ -3,18 +3,17 @@ package com.se15026.prasanth.trackbook;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -61,26 +60,13 @@ public class LoginActivity extends AppCompatActivity {
 
     private void retrieveData(){
 
-        databaseReference.addChildEventListener(new ChildEventListener() {
+        databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                String number = dataSnapshot.getValue(String.class);
-                loginPhoneNumbers.add(number);
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot data : dataSnapshot.getChildren()){
+                    String name = data.getValue(String.class);
+                    loginPhoneNumbers.add(name);
+                }
             }
 
             @Override
@@ -98,6 +84,8 @@ public class LoginActivity extends AppCompatActivity {
         for (String number : loginPhoneNumbers){
             if(numberInput.equals(number)){
                 decision = true;
+                Toast toast = Toast.makeText(getApplicationContext(), "" + number, Toast.LENGTH_SHORT);
+                toast.show();
                 break;
             }
         }
