@@ -7,7 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 
 public class WelcomeActivity extends AppCompatActivity {
 
-    private static int time = 5000; //Assign 5 seconds to time variable
+    private static int time = 3000; //Assign 5 seconds to time variable
     private Handler myHandler = new Handler();
 
     @Override

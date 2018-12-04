@@ -1,14 +1,21 @@
 package com.se15026.prasanth.trackbook;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
@@ -18,9 +25,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
-public class BookingActivity extends AppCompatActivity {
+public class BookingActivity extends AppCompatActivity{
 
     private Button submitBtn;
     private Button cancelBtn;
@@ -28,6 +36,7 @@ public class BookingActivity extends AppCompatActivity {
     private Spinner end;
     private Spinner time;
     private Spinner seats;
+    private TextView date;
     private EditText card;
     private EditText pin;
 
@@ -44,6 +53,10 @@ public class BookingActivity extends AppCompatActivity {
     private int stationNumber = 1; //to identify the station key
     private String testStationName; //to declare station name
 
+    private DatePickerDialog.OnDateSetListener mDateSetListener;
+
+    private static final String TAG = "BookingActivity";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +70,7 @@ public class BookingActivity extends AppCompatActivity {
         seats = (Spinner) findViewById(R.id.seatsDropdown);
         card = (EditText)findViewById(R.id.cardNumber);
         pin = (EditText) findViewById(R.id.pinNumber);
+        date = (TextView) findViewById(R.id.date);
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
@@ -97,22 +111,76 @@ public class BookingActivity extends AppCompatActivity {
             }
         });
 
-        start.setOnClickListener(new View.OnClickListener() {
+        start.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onClick(View v) {
-                bookingInfo.setStartingStation(start.getSelectedItem().toString());
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selectedStation = parent.getItemAtPosition(position).toString();
+                Toast toast = Toast.makeText(getApplicationContext(), selectedStation, Toast.LENGTH_SHORT);
+                toast.show();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
             }
         });
 
-        end.setOnClickListener(new View.OnClickListener() {
+        end.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onClick(View v) {
-                bookingInfo.setEndStation(end.getSelectedItem().toString());
-                stationValidation();
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
             }
         });
 
+        time.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        date.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                dateWindowMaker();
+
+                mDateSetListener = new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int day) {
+                        month = month + 1;
+                        Log.d(TAG, "OnDateSet : mm/dd/yy: " + month + "/" + day + "/" + year);
+                        String bookedDate = month + "/" + day + "/" + year;
+                        date.setText(bookedDate);
+                    }
+                };
+            }
+        });
     }
+
+    public void dateWindowMaker(){
+
+        Calendar cal = Calendar.getInstance();
+
+        int date = cal.get(Calendar.DAY_OF_MONTH);
+        int month = cal.get(Calendar.MONTH);
+        int year = cal.get(Calendar.YEAR);
+
+        DatePickerDialog dialog = new DatePickerDialog(BookingActivity.this, android.R.style.Theme_Holo_Light_Dialog_MinWidth, mDateSetListener, year, month, date);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.show();
+    }
+
 
     public void retrieveStations(){
 
@@ -121,7 +189,6 @@ public class BookingActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 for(DataSnapshot stations : dataSnapshot.getChildren()){
-
                     String stationNames = stations.getValue(String.class);
                     stationsList.add(stationNames);
                 }
@@ -134,6 +201,7 @@ public class BookingActivity extends AppCompatActivity {
         });
     }
 
+/*
     public void stationValidation(){
 
         if(startStation.equals(endStation) || startStation.equals(null) || endStation.equals(null)){
@@ -221,7 +289,7 @@ public class BookingActivity extends AppCompatActivity {
 
         return stationNumber;
     }
-
+*/
     public String getStartStation() {
         return startStation;
     }

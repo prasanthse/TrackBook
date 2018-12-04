@@ -126,12 +126,12 @@
         app:layout_constraintTop_toBottomOf="@+id/endStation" />
 
     <TextView
-        android:id="@+id/date"
+        android:id="@+id/datePicker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="28dp"
         android:layout_marginLeft="28dp"
-        android:layout_marginTop="6dp"
+        android:layout_marginTop="8dp"
         android:text="Date"
         android:textColor="@color/colorAccent"
         android:textSize="18sp"
@@ -297,8 +297,8 @@
         android:layout_width="78dp"
         android:layout_height="24dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="100dp"
-        android:layout_marginRight="100dp"
+        android:layout_marginEnd="97dp"
+        android:layout_marginRight="97dp"
         android:layout_marginBottom="80dp"
         android:background="@color/colorPrimary"
         android:ems="10"
@@ -319,6 +319,7 @@
         android:background="@color/colorPrimary"
         android:spinnerMode="dropdown"
         android:textAlignment="center"
+        android:textColor="@color/colorAccent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"></Spinner>
 
@@ -332,6 +333,7 @@
         android:background="@color/colorPrimary"
         android:spinnerMode="dropdown"
         android:textAlignment="center"
+        android:textColor="@color/colorAccent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"></Spinner>
 
@@ -345,19 +347,7 @@
         android:background="@color/colorPrimary"
         android:spinnerMode="dropdown"
         android:textAlignment="center"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"></Spinner>
-
-    <Spinner
-        android:id="@+id/dateDropdown"
-        android:layout_width="160dp"
-        android:layout_height="24dp"
-        android:layout_marginTop="317dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:background="@color/colorPrimary"
-        android:spinnerMode="dropdown"
-        android:textAlignment="center"
+        android:textColor="@color/colorAccent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"></Spinner>
 
@@ -371,7 +361,26 @@
         android:background="@color/colorPrimary"
         android:spinnerMode="dropdown"
         android:textAlignment="center"
+        android:textColor="@color/colorAccent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"></Spinner>
+
+    <TextView
+        android:id="@+id/date"
+        android:layout_width="161dp"
+        android:layout_height="23dp"
+        android:layout_marginStart="37dp"
+        android:layout_marginLeft="37dp"
+        android:layout_marginTop="317dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="Pick a date here"
+        android:textColor="@color/colorAccent"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.961"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>
