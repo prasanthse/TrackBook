@@ -96,9 +96,10 @@ public class BookingActivity extends AppCompatActivity{
         card.setEnabled(false);
         pin.setEnabled(false);
 
-        bookingLinks();
+        bookingLinks();//call function to call all the relevant onclick functions
     }
 
+    //call function to call all the relevant onclick functions
     public void bookingLinks(){
 
         submitBtn.setOnClickListener(new View.OnClickListener() {
