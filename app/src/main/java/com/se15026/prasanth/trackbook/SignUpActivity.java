@@ -1,5 +1,7 @@
 package com.se15026.prasanth.trackbook;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -35,11 +37,7 @@ public class SignUpActivity extends AppCompatActivity {
         signUpCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //alertDialog
-                Toast toast = Toast.makeText(getApplicationContext(), "Account creation cancelled", Toast.LENGTH_SHORT);
-                toast.show();
-
-                backToHome();
+                createAlertBox(); //call alert box creating function to popup alert box
             }
         });
 
@@ -49,19 +47,52 @@ public class SignUpActivity extends AppCompatActivity {
                 String userName = nameTxt.getText().toString().trim();
                 String userPhoneNumber = phoneTxt.getText().toString().trim();
 
-                database.child(userPhoneNumber).child("name").setValue(userName);
-                database.child(userPhoneNumber).child("number").setValue(userPhoneNumber);
+                if(userName.equals("") || userPhoneNumber.equals("")){
+                    toastMessage("Please fill both the fields");//calling toast message function to create toast message
+                }else{
+                    database.child(userPhoneNumber).child("name").setValue(userName);
+                    database.child(userPhoneNumber).child("number").setValue(userPhoneNumber);
 
-                Toast toast = Toast.makeText(getApplicationContext(), "Hi "+userName+", your account is created", Toast.LENGTH_LONG);
-                toast.show();
-
-                backToHome();
+                    toastMessage("Hi "+userName+", your account is created");//calling toast message function to create toast message
+                    backToHome();//call back to home function and return to login page
+                }
             }
         });
     }
 
+    //function to return to login page
     private void backToHome(){
         Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
         startActivity(intent);
+    }
+
+    //function to create toast message
+    private void toastMessage(String message){
+        Toast toast = Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT);
+        toast.show();
+    }
+
+    //function to create alert box
+    public void createAlertBox(){
+        AlertDialog.Builder alert = new AlertDialog.Builder(SignUpActivity.this);
+        alert.setTitle("Alert");
+        alert.setMessage("Do you really wants to cancel the SignUp");
+
+        alert.setPositiveButton("yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                toastMessage("Account creation cancelled"); //calling toast message function to create toast message
+                backToHome(); //call back to home function and return to login page
+            }
+        });
+
+        alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
+        alert.create().show();
     }
 }

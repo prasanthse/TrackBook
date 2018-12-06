@@ -1,6 +1,8 @@
 package com.se15026.prasanth.trackbook;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -44,14 +46,16 @@ public class BookingActivity extends AppCompatActivity{
 
     List<String> stationsList = new ArrayList<>();
     List<String> timeList = new ArrayList<>();
+    ArrayAdapter<String> stationAdapter;
 
     BookingInfo bookingInfo = new BookingInfo();
 
     private String startStation;
     private String endStation;
-
     private int stationNumber = 1; //to identify the station key
     private String testStationName; //to declare station name
+    private String receivedCardNumber = null;
+    private String receivedPinNumber = null;
 
     private DatePickerDialog.OnDateSetListener mDateSetListener;
 
@@ -74,13 +78,23 @@ public class BookingActivity extends AppCompatActivity{
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
-        retrieveStations();
+        retrieveStations();//call function to retrieve all the stations in Station object in firebase
 
-        ArrayAdapter<String> stationAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1, stationsList);
+        stationAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, stationsList);
         stationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
         start.setAdapter(stationAdapter);
-        end.setAdapter(stationAdapter);
+
+        end.setEnabled(false);
+
+        ArrayAdapter<String> test = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, stationsList);
+        start.setAdapter(test);
+
+        end.setEnabled(false);
+        time.setEnabled(false);
+        date.setEnabled(false);
+        seats.setEnabled(false);
+        card.setEnabled(false);
+        pin.setEnabled(false);
 
         bookingLinks();
     }
@@ -90,33 +104,25 @@ public class BookingActivity extends AppCompatActivity{
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //AlertBox
-                Toast toast = Toast.makeText(getApplicationContext(), "Your Booking was successful", Toast.LENGTH_SHORT);
-                toast.show();
-
                 Intent intent = new Intent(BookingActivity.this, HomeActivity.class);
-                startActivity(intent);
+                createAlertBox("Are you sure to submit?", "Your Booking was successful", intent);
             }
         });
 
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Alertbox
-                Toast toast = Toast.makeText(getApplicationContext(), "Your Booking was canceled", Toast.LENGTH_SHORT);
-                toast.show();
-
                 Intent intent = new Intent(BookingActivity.this, HomeActivity.class);
-                startActivity(intent);
+                createAlertBox("Are you sure to cancel submit?", "Your Booking was canceled", intent);
             }
         });
 
         start.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selectedStation = parent.getItemAtPosition(position).toString();
-                Toast toast = Toast.makeText(getApplicationContext(), selectedStation, Toast.LENGTH_SHORT);
-                toast.show();
+                String item = stationsList.get(position);
+                toastMessage(item);
+                end.setEnabled(true);
             }
 
             @Override
@@ -153,7 +159,7 @@ public class BookingActivity extends AppCompatActivity{
             @Override
             public void onClick(View v) {
 
-                dateWindowMaker();
+                dateWindowMaker();//call function to create calender
 
                 mDateSetListener = new DatePickerDialog.OnDateSetListener() {
                     @Override
@@ -166,8 +172,29 @@ public class BookingActivity extends AppCompatActivity{
                 };
             }
         });
+
+        card.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setReceivedCardNumber(card.getText().toString().trim());
+            }
+        });
+
+        pin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setReceivedPinNumber(pin.getText().toString().trim());
+            }
+        });
     }
 
+    //function to create toast message
+    public void toastMessage(String message){
+        Toast toast = Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT);
+        toast.show();
+    }
+
+    //function to create calender
     public void dateWindowMaker(){
 
         Calendar cal = Calendar.getInstance();
@@ -181,7 +208,7 @@ public class BookingActivity extends AppCompatActivity{
         dialog.show();
     }
 
-
+    //function to retrieve all the stations in Station object in firebase
     public void retrieveStations(){
 
         databaseReference.child("Stations").addValueEventListener(new ValueEventListener() {
@@ -199,6 +226,30 @@ public class BookingActivity extends AppCompatActivity{
 
             }
         });
+    }
+
+    //function to create alert box
+    public void createAlertBox(String message, final String toastMessage,final Intent intent){
+        AlertDialog.Builder alert = new AlertDialog.Builder(BookingActivity.this);
+        alert.setTitle("Alert");
+        alert.setMessage(message);
+
+        alert.setPositiveButton("yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                toastMessage(toastMessage);//call toast message function to create toast message
+                startActivity(intent);
+            }
+        });
+
+        alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
+        alert.create().show();
     }
 
 /*
@@ -304,5 +355,21 @@ public class BookingActivity extends AppCompatActivity{
 
     public void setEndStation(String endStation) {
         this.endStation = endStation;
+    }
+
+    public String getReceivedCardNumber() {
+        return receivedCardNumber;
+    }
+
+    public void setReceivedCardNumber(String receivedCardNumber) {
+        this.receivedCardNumber = receivedCardNumber;
+    }
+
+    public String getReceivedPinNumber() {
+        return receivedPinNumber;
+    }
+
+    public void setReceivedPinNumber(String receivedPinNumber) {
+        this.receivedPinNumber = receivedPinNumber;
     }
 }

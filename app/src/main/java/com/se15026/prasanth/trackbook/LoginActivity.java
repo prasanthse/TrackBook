@@ -38,7 +38,7 @@ public class LoginActivity extends AppCompatActivity {
 
         databaseReference = FirebaseDatabase.getInstance().getReference().child("Login");
 
-        retrieveData();
+        retrieveData(); //call the function to retrieve all the user login information from Login object in firebase
 
         signUp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -51,11 +51,12 @@ public class LoginActivity extends AppCompatActivity {
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                comparision();
+                comparision(); //call the function to compare given user phone number to firebase
             }
         });
     }
 
+    //function to retrieve all the user login information from Login object in firebase
     private void retrieveData(){
 
         databaseReference.addValueEventListener(new ValueEventListener() {
@@ -83,6 +84,7 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    //function to compare given user phone number to firebase
     private void comparision(){
 
         String numberInput = phoneTxt.getText().toString().trim();
@@ -95,19 +97,23 @@ public class LoginActivity extends AppCompatActivity {
             }
         }
 
-        compareDecision(decision);
+        compareDecision(decision); //pass comparison result as the parameter into the compare decision function and decide
     }
 
+    //compare the decision and confirm the login status
     private void compareDecision(boolean result){
         if(result){
-            Toast toast = Toast.makeText(getApplicationContext(), "Login successful", Toast.LENGTH_SHORT);
-            toast.show();
-
+            toastMessage("Login successful"); //call toast message function
             Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
             startActivity(intent);
         }else{
-            Toast toast = Toast.makeText(getApplicationContext(), "Login failure", Toast.LENGTH_SHORT);
-            toast.show();
+            toastMessage("Login failure! please check your internet connection or phone number if not the reason please create an account");//call toast message function
         }
+    }
+
+    //function to create toast message
+    private void toastMessage(String message){
+        Toast toast = Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT);
+        toast.show();
     }
 }
