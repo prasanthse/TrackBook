@@ -5,21 +5,25 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ListView;
 
 public class HistoryActivity extends AppCompatActivity {
 
     private Button homeBtn;
+    private ListView listView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
 
+        homeBtn = (Button) findViewById(R.id.homeBtn);
+        listView = (ListView) findViewById(R.id.qrCodeListView);
+
         backToHome();
     }
 
     public void backToHome(){
-        homeBtn = (Button) findViewById(R.id.homeBtn);
 
         homeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
