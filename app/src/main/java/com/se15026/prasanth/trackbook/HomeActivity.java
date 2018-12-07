@@ -4,9 +4,14 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.Toast;
+
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -57,8 +62,7 @@ public class HomeActivity extends AppCompatActivity {
         qrScannerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               // Intent intent = new Intent(HomeActivity.this, QrScanActivity.class);
-               // startActivity(intent);
+               scanProcess();//call function to scan the QR Code
             }
         });
     }
@@ -85,5 +89,34 @@ public class HomeActivity extends AppCompatActivity {
         });
 
         alert.create().show();
+    }
+
+    //function to scan the QR Code
+    public void scanProcess(){
+        IntentIntegrator integrator = new IntentIntegrator(HomeActivity.this);
+        integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
+        integrator.setPrompt("..............SCANNING..............");
+        integrator.setCameraId(0);
+        integrator.setBeepEnabled(false);
+        integrator.setBarcodeImageEnabled(false);
+        integrator.initiateScan();
+    }
+
+    //function to get the scan result
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        IntentResult intentResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if(intentResult != null){
+            if(intentResult.getContents() == null){
+                Toast.makeText(getApplicationContext(), "Scan cancelled", Toast.LENGTH_SHORT).show();
+            }
+            else{
+                Toast.makeText(getApplicationContext(), intentResult.getContents(), Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(HomeActivity.this, QrScanActivity.class);
+                startActivity(intent);
+            }
+        }else{
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 }
