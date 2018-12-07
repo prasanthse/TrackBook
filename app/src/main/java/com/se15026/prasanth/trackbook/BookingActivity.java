@@ -42,8 +42,6 @@ public class BookingActivity extends AppCompatActivity{
     private EditText card;
     private EditText pin;
 
-    private TextView test;
-
     private DatabaseReference databaseReference;
 
     List<String> stationsList = new ArrayList<>();
@@ -78,20 +76,13 @@ public class BookingActivity extends AppCompatActivity{
         pin = (EditText) findViewById(R.id.pinNumber);
         date = (TextView) findViewById(R.id.date);
 
-        test = (TextView)findViewById(R.id.testText);
-
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
         retrieveStations();//call function to retrieve all the stations in Station object in firebase
 
-        stationAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, stationsList);
+        stationAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, stationsList);
         stationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         start.setAdapter(stationAdapter);
-
-        end.setEnabled(false);
-
-        ArrayAdapter<String> test = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, stationsList);
-        start.setAdapter(test);
 
         end.setEnabled(false);
         time.setEnabled(false);
@@ -125,9 +116,7 @@ public class BookingActivity extends AppCompatActivity{
         start.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                test.setText(position);
-                String item = stationsList.get(position);
-                toastMessage(item);
+                start.setSelection(position);
                 end.setEnabled(true);
             }
 
