@@ -57,7 +57,8 @@ public class HomeActivity extends AppCompatActivity {
         qrScannerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //QR Scanner activity
+                Intent intent = new Intent(HomeActivity.this, QrScanActivity.class);
+                startActivity(intent);
             }
         });
     }
