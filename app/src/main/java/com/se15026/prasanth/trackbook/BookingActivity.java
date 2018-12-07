@@ -42,6 +42,8 @@ public class BookingActivity extends AppCompatActivity{
     private EditText card;
     private EditText pin;
 
+    private TextView test;
+
     private DatabaseReference databaseReference;
 
     List<String> stationsList = new ArrayList<>();
@@ -75,6 +77,8 @@ public class BookingActivity extends AppCompatActivity{
         card = (EditText)findViewById(R.id.cardNumber);
         pin = (EditText) findViewById(R.id.pinNumber);
         date = (TextView) findViewById(R.id.date);
+
+        test = (TextView)findViewById(R.id.testText);
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
@@ -121,6 +125,7 @@ public class BookingActivity extends AppCompatActivity{
         start.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                test.setText(position);
                 String item = stationsList.get(position);
                 toastMessage(item);
                 end.setEnabled(true);

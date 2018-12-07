@@ -22,6 +22,7 @@
         <activity android:name=".BookingActivity" />
         <activity android:name=".HistoryActivity" />
         <activity android:name=".QrScanActivity"></activity>
+
     </application>
 
 </manifest>
