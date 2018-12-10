@@ -30,6 +30,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class BookingActivity extends AppCompatActivity{
 
@@ -40,6 +41,7 @@ public class BookingActivity extends AppCompatActivity{
     private Spinner time;
     private Spinner seats;
     private TextView date;
+    private TextView name;
     private EditText card;
     private EditText pin;
     private RadioGroup radioGroup;
@@ -47,17 +49,15 @@ public class BookingActivity extends AppCompatActivity{
 
     private DatabaseReference databaseReference;
 
-    ArrayList<String> stationsList;
-    ArrayList<String> timeList;
-    ArrayAdapter<String> stationAdapter;
-    ArrayAdapter<CharSequence> seatAmount;
+    private List<String> stationsList;
+    private List<String> timeList;
+    private ArrayAdapter<String> stationAdapter;
+    private ArrayAdapter<CharSequence> seatAmount;
 
     BookingInfo bookingInfo = new BookingInfo();
 
     private String startStation;
     private String endStation;
-    private int stationNumber = 1; //to identify the station key
-    private String testStationName; //to declare station name
     private String receivedCardNumber = null;
     private String receivedPinNumber = null;
 
@@ -80,6 +80,14 @@ public class BookingActivity extends AppCompatActivity{
         pin = (EditText) findViewById(R.id.pinNumber);
         date = (TextView) findViewById(R.id.date);
         radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
+        name = (TextView) findViewById(R.id.userNameBooking);
+
+        Bundle extras = getIntent().getExtras();
+        if(extras != null){
+            name.setText(extras.getString("userName"));
+            bookingInfo.setName(name.getText().toString().trim());
+        }
+
         stationsList = new ArrayList<String>();
 
         stationAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, stationsList);
@@ -106,8 +114,13 @@ public class BookingActivity extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 checkButton();//call function to get the value of selected radio button
-                Intent intent = new Intent(BookingActivity.this, HomeActivity.class);
-                createAlertBox("Are you sure to submit?", "Your Booking was successful", intent);
+
+                if(date.getText().equals(null) || card.getText().equals(null) || pin.getText().equals(null)){
+                    toastMessage("Please fill all the fields");
+                }else{
+                    Intent intent = new Intent(BookingActivity.this, HomeActivity.class);
+                    createAlertBox("Are you sure to submit?", "Your Booking was successful", intent);
+                }
             }
         });
 
@@ -282,8 +295,8 @@ public class BookingActivity extends AppCompatActivity{
         String classValue = String.valueOf(radioButton.getText());
 
         bookingInfo.setBookedClass(classValue);
-        toastMessage(classValue);
     }
+
 /*
     //function to check whether the start and end station are same or different
     public void stationValidation(){

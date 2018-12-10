@@ -20,6 +20,8 @@ public class HomeActivity extends AppCompatActivity {
     private ImageButton logoutBtn;
     private ImageButton qrScannerBtn;
 
+    private String userName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,6 +31,11 @@ public class HomeActivity extends AppCompatActivity {
         historyBtn = (ImageButton) findViewById(R.id.history);
         logoutBtn = (ImageButton) findViewById(R.id.logout);
         qrScannerBtn = (ImageButton) findViewById(R.id.qrScanner);
+
+        Bundle extras = getIntent().getExtras();
+        if(extras != null){
+            setUserName(extras.getString("loginName"));
+        }
 
         enterNewActivity();//call all the function which related to onclick events
     }
@@ -40,6 +47,7 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(HomeActivity.this, BookingActivity.class);
+                intent.putExtra("userName", getUserName());
                 startActivity(intent);
             }
         });
@@ -48,6 +56,7 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(HomeActivity.this, HistoryActivity.class);
+                intent.putExtra("userName", getUserName());
                 startActivity(intent);
             }
         });
@@ -118,5 +127,13 @@ public class HomeActivity extends AppCompatActivity {
         }else{
             super.onActivityResult(requestCode, resultCode, data);
         }
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }

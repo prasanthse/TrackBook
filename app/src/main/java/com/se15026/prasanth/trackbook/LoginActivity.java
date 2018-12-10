@@ -89,22 +89,25 @@ public class LoginActivity extends AppCompatActivity {
 
         String numberInput = phoneTxt.getText().toString().trim();
         boolean decision = false;
+        String userName = null;
 
         for (LoginInfo checkInfo : loginPhoneNumbers){
             if(numberInput.equals(checkInfo.getNumber())){
+                userName = checkInfo.getName();
                 decision = true;
                 break;
             }
         }
 
-        compareDecision(decision); //pass comparison result as the parameter into the compare decision function and decide
+        compareDecision(decision, userName); //pass comparison result as the parameter into the compare decision function and decide
     }
 
     //compare the decision and confirm the login status
-    private void compareDecision(boolean result){
+    private void compareDecision(boolean result, String userName){
         if(result){
             toastMessage("Login successful"); //call toast message function
             Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+            intent.putExtra("loginName", userName);
             startActivity(intent);
         }else{
             toastMessage("Login failure! please check your internet connection or phone number if not the reason please create an account");//call toast message function

@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
@@ -18,7 +19,7 @@ public class HistoryActivity extends AppCompatActivity {
 
     private Button homeBtn;
     private ImageView imageView;
-    String text = "Prasanth";
+    private TextView name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,10 +28,16 @@ public class HistoryActivity extends AppCompatActivity {
 
         homeBtn = (Button) findViewById(R.id.homeBtn);
         imageView = (ImageView) findViewById(R.id.qrImage);
+        name = (TextView) findViewById(R.id.userNameHistory);
+
+        Bundle extras = getIntent().getExtras();
+        if(extras != null){
+            name.setText(extras.getString("userName"));
+        }
 
         MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
         try {
-                BitMatrix bitMatrix = multiFormatWriter.encode(text, BarcodeFormat.QR_CODE,800,800);
+                BitMatrix bitMatrix = multiFormatWriter.encode(name.getText().toString().trim(), BarcodeFormat.QR_CODE,800,800);
                 BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
                 Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);
                 imageView.setImageBitmap(bitmap);
