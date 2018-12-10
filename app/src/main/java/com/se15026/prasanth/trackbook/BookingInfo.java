@@ -1,7 +1,5 @@
 package com.se15026.prasanth.trackbook;
 
-import java.util.Date;
-
 public class BookingInfo {
 
     private String name;
@@ -9,14 +7,14 @@ public class BookingInfo {
     private String startingStation;
     private String endStation;
     private String time;
-    private Date date;
-    private int bookedClass;
+    private String date;
+    private String bookedClass;
     private int seat;
 
     public BookingInfo() {
     }
 
-    public BookingInfo(String startingStation, String endStation, String time, Date date, int bookedClass, int seat, String name, String phoneNumber) {
+    public BookingInfo(String startingStation, String endStation, String time, String date, String bookedClass, int seat, String name, String phoneNumber) {
         this.startingStation = startingStation;
         this.endStation = endStation;
         this.time = time;
@@ -51,19 +49,19 @@ public class BookingInfo {
         this.time = time;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 
-    public int getBookedClass() {
+    public String getBookedClass() {
         return bookedClass;
     }
 
-    public void setBookedClass(int bookedClass) {
+    public void setBookedClass(String bookedClass) {
         this.bookedClass = bookedClass;
     }
 
@@ -89,5 +87,18 @@ public class BookingInfo {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    @Override
+    public String toString() {
+        return
+                "name = " + name + "\n" +
+                "phoneNumber = " + phoneNumber + "\n" +
+                "startingStation = " + startingStation + "\n" +
+                "endStation = " + endStation + "\n" +
+                "time = " + time + "\n" +
+                "date = " + date + "\n" +
+                "bookedClass = " + bookedClass + "\n" +
+                "seat = " + seat;
     }
 }

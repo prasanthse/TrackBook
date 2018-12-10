@@ -16,6 +16,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,7 +30,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 public class BookingActivity extends AppCompatActivity{
 
@@ -41,12 +42,15 @@ public class BookingActivity extends AppCompatActivity{
     private TextView date;
     private EditText card;
     private EditText pin;
+    private RadioGroup radioGroup;
+    private RadioButton radioButton;
 
     private DatabaseReference databaseReference;
 
-    List<String> stationsList = new ArrayList<>();
-    List<String> timeList = new ArrayList<>();
+    ArrayList<String> stationsList;
+    ArrayList<String> timeList;
     ArrayAdapter<String> stationAdapter;
+    ArrayAdapter<CharSequence> seatAmount;
 
     BookingInfo bookingInfo = new BookingInfo();
 
@@ -75,21 +79,22 @@ public class BookingActivity extends AppCompatActivity{
         card = (EditText)findViewById(R.id.cardNumber);
         pin = (EditText) findViewById(R.id.pinNumber);
         date = (TextView) findViewById(R.id.date);
+        radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
+        stationsList = new ArrayList<String>();
+
+        stationAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, stationsList);
+        stationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
         retrieveStations();//call function to retrieve all the stations in Station object in firebase
 
-        stationAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, stationsList);
-        stationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         start.setAdapter(stationAdapter);
+        end.setAdapter(stationAdapter);
 
-        end.setEnabled(false);
-        time.setEnabled(false);
-        date.setEnabled(false);
-        seats.setEnabled(false);
-        card.setEnabled(false);
-        pin.setEnabled(false);
+        seatAmount = ArrayAdapter.createFromResource(this, R.array.seatAmount, android.R.layout.simple_spinner_item);
+        seatAmount.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        seats.setAdapter(seatAmount);
 
         bookingLinks();//call function to call all the relevant onclick functions
     }
@@ -100,6 +105,7 @@ public class BookingActivity extends AppCompatActivity{
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                checkButton();//call function to get the value of selected radio button
                 Intent intent = new Intent(BookingActivity.this, HomeActivity.class);
                 createAlertBox("Are you sure to submit?", "Your Booking was successful", intent);
             }
@@ -117,7 +123,9 @@ public class BookingActivity extends AppCompatActivity{
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 start.setSelection(position);
-                end.setEnabled(true);
+                String text = parent.getItemAtPosition(position).toString();
+                toastMessage(text);
+                bookingInfo.setStartingStation(text);
             }
 
             @Override
@@ -129,7 +137,10 @@ public class BookingActivity extends AppCompatActivity{
         end.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
+                end.setSelection(position);
+                String text = parent.getItemAtPosition(position).toString();
+                toastMessage(text);
+                bookingInfo.setEndStation(text);
             }
 
             @Override
@@ -141,7 +152,8 @@ public class BookingActivity extends AppCompatActivity{
         time.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
+                //stationValidation();//call function to check whether the start and end station are same or different
+                //time.setSelection(position);
             }
 
             @Override
@@ -165,6 +177,21 @@ public class BookingActivity extends AppCompatActivity{
                         date.setText(bookedDate);
                     }
                 };
+            }
+        });
+
+        seats.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                seats.setSelection(position);
+                String text = parent.getItemAtPosition(position).toString();
+                toastMessage(text);
+                bookingInfo.setSeat(Integer.parseInt(text));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
             }
         });
 
@@ -247,32 +274,34 @@ public class BookingActivity extends AppCompatActivity{
         alert.create().show();
     }
 
+    //function to get the value of selected radio button
+    public void checkButton(){
+        int radioId = radioGroup.getCheckedRadioButtonId();
+        radioButton = findViewById(radioId);
+
+        String classValue = String.valueOf(radioButton.getText());
+
+        bookingInfo.setBookedClass(classValue);
+        toastMessage(classValue);
+    }
 /*
+    //function to check whether the start and end station are same or different
     public void stationValidation(){
 
         if(startStation.equals(endStation) || startStation.equals(null) || endStation.equals(null)){
-            Toast toast = Toast.makeText(getApplicationContext(), "Please make sure you select two different stations", Toast.LENGTH_LONG);
-            toast.show();
-
+            toastMessage("Please make sure you select two different stations");
         }else{
-
-            time.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    bookingInfo.setStartingStation(getStartStation());
-                    bookingInfo.setEndStation(getEndStation());
-
-                    retrieveTime();
-                }
-            });
-
+            bookingInfo.setStartingStation(getStartStation());
+            bookingInfo.setEndStation(getEndStation());
+            retrieveTime();//call function to retrieve time table
         }
     }
 
+    //function to retrieve time table
     public void retrieveTime(){
 
-        String start = Integer.toString(retrieveStationNumber(getStartStation()));
-        String end = Integer.toString(retrieveStationNumber(getEndStation()));
+        String start = Integer.toString(retrieveStationNumber(bookingInfo.getStartingStation()));
+        String end = Integer.toString(retrieveStationNumber(bookingInfo.getEndStation()));
 
         databaseReference.child("Time").child(start).child(end).addValueEventListener(new ValueEventListener() {
             @Override
@@ -295,21 +324,10 @@ public class BookingActivity extends AppCompatActivity{
 
         time.setAdapter(timeAdapter);
 
-        time.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                bookingInfo.setTime(time.getSelectedItem().toString());
-            }
-        });
-
-        dateChoose();
+        bookingInfo.setTime(time.getSelectedItem().toString());
     }
 
-    public void dateChoose(){
-
-
-    }
-
+    //function to retrieve starting station number
     public int retrieveStationNumber(String name){
 
         testStationName = name;
