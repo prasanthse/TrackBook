@@ -92,13 +92,13 @@ public class BookingInfo {
     @Override
     public String toString() {
         return
-                "name = " + name + "\n" +
-                "phoneNumber = " + phoneNumber + "\n" +
-                "startingStation = " + startingStation + "\n" +
-                "endStation = " + endStation + "\n" +
-                "time = " + time + "\n" +
-                "date = " + date + "\n" +
-                "bookedClass = " + bookedClass + "\n" +
-                "seat = " + seat;
+                "Name = " + name + "\n" +
+                "Phone Number = " + phoneNumber + "\n" +
+                "Start Station = " + startingStation + "\n" +
+                "End Station = " + endStation + "\n" +
+                "Time = " + time + "\n" +
+                "Date = " + date + "\n" +
+                "Booked Class = " + bookedClass + "\n" +
+                "Seats = " + seat;
     }
 }

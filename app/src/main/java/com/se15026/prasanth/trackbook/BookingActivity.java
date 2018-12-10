@@ -86,6 +86,7 @@ public class BookingActivity extends AppCompatActivity{
         if(extras != null){
             name.setText(extras.getString("userName"));
             bookingInfo.setName(name.getText().toString().trim());
+            bookingInfo.setPhoneNumber(extras.getString("phoneNumber"));
         }
 
         stationsList = new ArrayList<String>();
@@ -114,12 +115,15 @@ public class BookingActivity extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 checkButton();//call function to get the value of selected radio button
+                final int confirmation = 1;
 
-                if(date.getText().equals(null) || card.getText().equals(null) || pin.getText().equals(null)){
+                if(date.getText().equals("") || card.getText().equals("") || pin.getText().equals("")){
                     toastMessage("Please fill all the fields");
                 }else{
                     Intent intent = new Intent(BookingActivity.this, HomeActivity.class);
-                    createAlertBox("Are you sure to submit?", "Your Booking was successful", intent);
+                    intent.putExtra("loginName", bookingInfo.getName());
+                    intent.putExtra("loginNumber", bookingInfo.getPhoneNumber());
+                    createAlertBox("Are you sure to submit?", "Your Booking was successful", intent, confirmation);
                 }
             }
         });
@@ -127,8 +131,11 @@ public class BookingActivity extends AppCompatActivity{
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                final int confirmation = 0;
                 Intent intent = new Intent(BookingActivity.this, HomeActivity.class);
-                createAlertBox("Are you sure to cancel submit?", "Your Booking was canceled", intent);
+                intent.putExtra("loginName", bookingInfo.getName());
+                intent.putExtra("loginNumber", bookingInfo.getPhoneNumber());
+                createAlertBox("Are you sure to cancel submit?", "Your Booking was canceled", intent, confirmation);
             }
         });
 
@@ -185,8 +192,8 @@ public class BookingActivity extends AppCompatActivity{
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int day) {
                         month = month + 1;
-                        Log.d(TAG, "OnDateSet : mm/dd/yy: " + month + "/" + day + "/" + year);
-                        String bookedDate = month + "/" + day + "/" + year;
+                        Log.d(TAG, "OnDateSet : dd/mm/yy: " + day + "/" + month + "/" + year);
+                        String bookedDate = day + "/" + month + "/" + year;
                         date.setText(bookedDate);
                     }
                 };
@@ -264,7 +271,7 @@ public class BookingActivity extends AppCompatActivity{
     }
 
     //function to create alert box
-    public void createAlertBox(String message, final String toastMessage,final Intent intent){
+    public void createAlertBox(String message, final String toastMessage, final Intent intent, final int confirmation){
         AlertDialog.Builder alert = new AlertDialog.Builder(BookingActivity.this);
         alert.setTitle("Alert");
         alert.setMessage(message);
@@ -272,6 +279,20 @@ public class BookingActivity extends AppCompatActivity{
         alert.setPositiveButton("yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+/*
+                if(confirmation == 1){
+                    String key = databaseReference.child("Bookings").push().getKey();
+
+                    databaseReference.child("Bookings").child(key).child("Name").setValue(bookingInfo.getName());
+                    databaseReference.child("Bookings").child(key).child("PhoneNumber").setValue(bookingInfo.getPhoneNumber());
+                    databaseReference.child("Bookings").child(key).child("StartStation").setValue(bookingInfo.getStartingStation());
+                    databaseReference.child("Bookings").child(key).child("EndStation").setValue(bookingInfo.getEndStation());
+                    databaseReference.child("Bookings").child(key).child("Time").setValue(bookingInfo.getTime());
+                    databaseReference.child("Bookings").child(key).child("Date").setValue(bookingInfo.getDate());
+                    databaseReference.child("Bookings").child(key).child("Class").setValue(bookingInfo.getBookedClass());
+                    databaseReference.child("Bookings").child(key).child("Seats").setValue(bookingInfo.getSeat());
+                }
+*/
                 toastMessage(toastMessage);//call toast message function to create toast message
                 startActivity(intent);
             }

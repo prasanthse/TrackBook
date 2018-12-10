@@ -21,6 +21,7 @@ public class HomeActivity extends AppCompatActivity {
     private ImageButton qrScannerBtn;
 
     private String userName;
+    private String userPhoneNumber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +36,7 @@ public class HomeActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         if(extras != null){
             setUserName(extras.getString("loginName"));
+            setUserPhoneNumber(extras.getString("loginNumber"));
         }
 
         enterNewActivity();//call all the function which related to onclick events
@@ -48,6 +50,7 @@ public class HomeActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(HomeActivity.this, BookingActivity.class);
                 intent.putExtra("userName", getUserName());
+                intent.putExtra("phoneNumber", getUserPhoneNumber());
                 startActivity(intent);
             }
         });
@@ -57,6 +60,7 @@ public class HomeActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(HomeActivity.this, HistoryActivity.class);
                 intent.putExtra("userName", getUserName());
+                intent.putExtra("phoneNumber", getUserPhoneNumber());
                 startActivity(intent);
             }
         });
@@ -85,8 +89,8 @@ public class HomeActivity extends AppCompatActivity {
         alert.setPositiveButton("yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                android.os.Process.killProcess(android.os.Process.myPid());
-                System.exit(1);
+               // android.os.Process.killProcess(android.os.Process.myPid());
+                //System.exit(1);
             }
         });
 
@@ -135,5 +139,13 @@ public class HomeActivity extends AppCompatActivity {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public String getUserPhoneNumber() {
+        return userPhoneNumber;
+    }
+
+    public void setUserPhoneNumber(String userPhoneNumber) {
+        this.userPhoneNumber = userPhoneNumber;
     }
 }
