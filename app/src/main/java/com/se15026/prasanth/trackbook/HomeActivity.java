@@ -108,7 +108,7 @@ public class HomeActivity extends AppCompatActivity {
     public void scanProcess(){
         IntentIntegrator integrator = new IntentIntegrator(HomeActivity.this);
         integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
-        integrator.setPrompt("..............SCANNING..............");
+        integrator.setPrompt("Scanning for ticket information");
         integrator.setCameraId(0);
         integrator.setBeepEnabled(false);
         integrator.setBarcodeImageEnabled(false);
