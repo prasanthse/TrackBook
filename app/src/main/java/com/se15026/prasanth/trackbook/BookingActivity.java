@@ -91,15 +91,8 @@ public class BookingActivity extends AppCompatActivity{
 
         stationsList = new ArrayList<String>();
 
-        stationAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, stationsList);
-        stationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
         databaseReference = FirebaseDatabase.getInstance().getReference();
-
         retrieveStations();//call function to retrieve all the stations in Station object in firebase
-
-        start.setAdapter(stationAdapter);
-        end.setAdapter(stationAdapter);
 
         seatAmount = ArrayAdapter.createFromResource(this, R.array.seatAmount, android.R.layout.simple_spinner_item);
         seatAmount.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -261,6 +254,11 @@ public class BookingActivity extends AppCompatActivity{
                     String stationNames = stations.getValue(String.class);
                     stationsList.add(stationNames);
                 }
+
+                stationAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, stationsList);
+                stationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                start.setAdapter(stationAdapter);
+                end.setAdapter(stationAdapter);
             }
 
             @Override
@@ -268,6 +266,8 @@ public class BookingActivity extends AppCompatActivity{
 
             }
         });
+
+
     }
 
     //function to create alert box

@@ -89,8 +89,8 @@ public class HomeActivity extends AppCompatActivity {
         alert.setPositiveButton("yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-               // android.os.Process.killProcess(android.os.Process.myPid());
-                //System.exit(1);
+               Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
+               startActivity(intent);
             }
         });
 
@@ -124,9 +124,9 @@ public class HomeActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "Scan cancelled", Toast.LENGTH_SHORT).show();
             }
             else{
-                Toast.makeText(getApplicationContext(), intentResult.getContents(), Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(HomeActivity.this, QrScanActivity.class);
-                startActivity(intent);
+                Toast.makeText(getApplicationContext(), intentResult.getContents(), Toast.LENGTH_LONG).show();
+                //Intent intent = new Intent(HomeActivity.this, QrScanActivity.class);
+                //startActivity(intent);
             }
         }else{
             super.onActivityResult(requestCode, resultCode, data);

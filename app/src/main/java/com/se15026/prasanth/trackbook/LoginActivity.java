@@ -113,7 +113,7 @@ public class LoginActivity extends AppCompatActivity {
             intent.putExtra("loginNumber", phone);
             startActivity(intent);
         }else{
-            toastMessage("Login failure! please check your internet connection or phone number if not the reason please create an account");//call toast message function
+            Toast.makeText(getApplicationContext(), "Login failure! please check your internet connection or phone number if not the reason please create an account", Toast.LENGTH_LONG).show();
         }
     }
 

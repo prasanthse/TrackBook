@@ -1,6 +1,7 @@
 package com.se15026.prasanth.trackbook;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -9,7 +10,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 import java.util.ArrayList;
 
@@ -35,7 +40,7 @@ public class HistoryActivity extends AppCompatActivity {
         imageView = (ImageView) findViewById(R.id.qrImage);
         name = (TextView) findViewById(R.id.userNameHistory);
 
-        databaseReference = FirebaseDatabase.getInstance().getReference().child("Bookings");
+        //databaseReference = FirebaseDatabase.getInstance().getReference().child("Bookings");
 
         Bundle extras = getIntent().getExtras();
         if(extras != null){
@@ -45,19 +50,20 @@ public class HistoryActivity extends AppCompatActivity {
         }
 
         //retrieveData();//call function to retrieve bookings information from database
-/*
-        for(int i = 0; i<bookingList.size(); i++){
+
+        //for(int i = 0; i<bookingList.size(); i++){
             MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
             try {
-                BitMatrix bitMatrix = multiFormatWriter.encode(bookingList.get(i).toString(), BarcodeFormat.QR_CODE,800,800);
+                //BitMatrix bitMatrix = multiFormatWriter.encode(bookingList.get(i).toString(), BarcodeFormat.QR_CODE,800,800);
+                BitMatrix bitMatrix = multiFormatWriter.encode("Track Book", BarcodeFormat.QR_CODE,800,800);
                 BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
                 Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);
                 imageView.setImageBitmap(bitmap);
             } catch (WriterException e) {
                 e.printStackTrace();
             }
-        }
-*/
+        //}
+
         backToHome();
     }
 
