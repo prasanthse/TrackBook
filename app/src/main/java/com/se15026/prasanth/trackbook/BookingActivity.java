@@ -65,6 +65,8 @@ public class BookingActivity extends AppCompatActivity{
 
     private static final String TAG = "BookingActivity";
 
+    private String stationNumber;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,7 +100,10 @@ public class BookingActivity extends AppCompatActivity{
         seatAmount.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         seats.setAdapter(seatAmount);
 
+        //time.setEnabled(false);
+
         bookingLinks();//call function to call all the relevant onclick functions
+
     }
 
     //call function to call all the relevant onclick functions
@@ -108,15 +113,20 @@ public class BookingActivity extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 checkButton();//call function to get the value of selected radio button
-                final int confirmation = 1;
+                int confirmation = 1;
 
-                if(date.getText().equals("") || card.getText().equals("") || pin.getText().equals("")){
+                if(bookingInfo.getDate() == null || pin.getText().toString().trim().length() == 0 || card.getText().toString().trim().length() == 0){
                     toastMessage("Please fill all the fields");
                 }else{
+
+                    bookingInfo.setTime("06:10 AM");
+
                     Intent intent = new Intent(BookingActivity.this, HomeActivity.class);
                     intent.putExtra("loginName", bookingInfo.getName());
                     intent.putExtra("loginNumber", bookingInfo.getPhoneNumber());
                     createAlertBox("Are you sure to submit?", "Your Booking was successful", intent, confirmation);
+
+                    toastMessage(bookingInfo.toString());
                 }
             }
         });
@@ -124,7 +134,7 @@ public class BookingActivity extends AppCompatActivity{
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final int confirmation = 0;
+                int confirmation = 0;
                 Intent intent = new Intent(BookingActivity.this, HomeActivity.class);
                 intent.putExtra("loginName", bookingInfo.getName());
                 intent.putExtra("loginNumber", bookingInfo.getPhoneNumber());
@@ -137,7 +147,6 @@ public class BookingActivity extends AppCompatActivity{
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 start.setSelection(position);
                 String text = parent.getItemAtPosition(position).toString();
-                toastMessage(text);
                 bookingInfo.setStartingStation(text);
             }
 
@@ -152,8 +161,9 @@ public class BookingActivity extends AppCompatActivity{
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 end.setSelection(position);
                 String text = parent.getItemAtPosition(position).toString();
-                toastMessage(text);
                 bookingInfo.setEndStation(text);
+
+                //stationValidation();//call function to check whether the start and end station are same or different
             }
 
             @Override
@@ -165,8 +175,9 @@ public class BookingActivity extends AppCompatActivity{
         time.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                //stationValidation();//call function to check whether the start and end station are same or different
                 //time.setSelection(position);
+                //String text = parent.getItemAtPosition(position).toString();
+                bookingInfo.setTime("06:10AM");
             }
 
             @Override
@@ -178,9 +189,7 @@ public class BookingActivity extends AppCompatActivity{
         date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 dateWindowMaker();//call function to create calender
-
                 mDateSetListener = new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int day) {
@@ -188,6 +197,7 @@ public class BookingActivity extends AppCompatActivity{
                         Log.d(TAG, "OnDateSet : dd/mm/yy: " + day + "/" + month + "/" + year);
                         String bookedDate = day + "/" + month + "/" + year;
                         date.setText(bookedDate);
+                        bookingInfo.setDate(bookedDate);
                     }
                 };
             }
@@ -198,7 +208,6 @@ public class BookingActivity extends AppCompatActivity{
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 seats.setSelection(position);
                 String text = parent.getItemAtPosition(position).toString();
-                toastMessage(text);
                 bookingInfo.setSeat(Integer.parseInt(text));
             }
 
@@ -223,53 +232,6 @@ public class BookingActivity extends AppCompatActivity{
         });
     }
 
-    //function to create toast message
-    public void toastMessage(String message){
-        Toast toast = Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT);
-        toast.show();
-    }
-
-    //function to create calender
-    public void dateWindowMaker(){
-
-        Calendar cal = Calendar.getInstance();
-
-        int date = cal.get(Calendar.DAY_OF_MONTH);
-        int month = cal.get(Calendar.MONTH);
-        int year = cal.get(Calendar.YEAR);
-
-        DatePickerDialog dialog = new DatePickerDialog(BookingActivity.this, android.R.style.Theme_Holo_Light_Dialog_MinWidth, mDateSetListener, year, month, date);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialog.show();
-    }
-
-    //function to retrieve all the stations in Station object in firebase
-    public void retrieveStations(){
-
-        databaseReference.child("Stations").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                for(DataSnapshot stations : dataSnapshot.getChildren()){
-                    String stationNames = stations.getValue(String.class);
-                    stationsList.add(stationNames);
-                }
-
-                stationAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, stationsList);
-                stationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                start.setAdapter(stationAdapter);
-                end.setAdapter(stationAdapter);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-
-    }
-
     //function to create alert box
     public void createAlertBox(String message, final String toastMessage, final Intent intent, final int confirmation){
         AlertDialog.Builder alert = new AlertDialog.Builder(BookingActivity.this);
@@ -279,7 +241,7 @@ public class BookingActivity extends AppCompatActivity{
         alert.setPositiveButton("yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-/*
+
                 if(confirmation == 1){
                     String key = databaseReference.child("Bookings").push().getKey();
 
@@ -292,7 +254,7 @@ public class BookingActivity extends AppCompatActivity{
                     databaseReference.child("Bookings").child(key).child("Class").setValue(bookingInfo.getBookedClass());
                     databaseReference.child("Bookings").child(key).child("Seats").setValue(bookingInfo.getSeat());
                 }
-*/
+
                 toastMessage(toastMessage);//call toast message function to create toast message
                 startActivity(intent);
             }
@@ -318,26 +280,72 @@ public class BookingActivity extends AppCompatActivity{
         bookingInfo.setBookedClass(classValue);
     }
 
-/*
+    //function to retrieve all the stations in Station object in firebase
+    public void retrieveStations(){
+
+        databaseReference.child("Stations").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot stations : dataSnapshot.getChildren()){
+                    String stationNames = stations.getValue(String.class);
+                    stationsList.add(stationNames);
+                }
+
+                stationAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, stationsList);
+                stationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                start.setAdapter(stationAdapter);
+                end.setAdapter(stationAdapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    //function to create toast message
+    public void toastMessage(String message){
+        Toast toast = Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT);
+        toast.show();
+    }
+
     //function to check whether the start and end station are same or different
     public void stationValidation(){
 
-        if(startStation.equals(endStation) || startStation.equals(null) || endStation.equals(null)){
+        if(bookingInfo.getStartingStation().equals(bookingInfo.getEndStation())){
             toastMessage("Please make sure you select two different stations");
         }else{
-            bookingInfo.setStartingStation(getStartStation());
-            bookingInfo.setEndStation(getEndStation());
             retrieveTime();//call function to retrieve time table
         }
+    }
+
+    //function to create calender
+    public void dateWindowMaker(){
+
+        Calendar cal = Calendar.getInstance();
+
+        int date = cal.get(Calendar.DAY_OF_MONTH);
+        int month = cal.get(Calendar.MONTH);
+        int year = cal.get(Calendar.YEAR);
+
+        DatePickerDialog dialog = new DatePickerDialog(BookingActivity.this, android.R.style.Theme_Holo_Light_Dialog_MinWidth, mDateSetListener, year, month, date);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.show();
     }
 
     //function to retrieve time table
     public void retrieveTime(){
 
-        String start = Integer.toString(retrieveStationNumber(bookingInfo.getStartingStation()));
-        String end = Integer.toString(retrieveStationNumber(bookingInfo.getEndStation()));
+        retrieveStationNumber(1);
+        String startNumber = getStationNumber();
+        toastMessage(startNumber);
 
-        databaseReference.child("Time").child(start).child(end).addValueEventListener(new ValueEventListener() {
+        retrieveStationNumber(2);
+        String endNumber = getStationNumber();
+
+        databaseReference.child("Time").child(startNumber).child(endNumber).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -353,41 +361,71 @@ public class BookingActivity extends AppCompatActivity{
             }
         });
 
+        time.setEnabled(true);
+
         ArrayAdapter<String> timeAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1, timeList);
         timeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
         time.setAdapter(timeAdapter);
-
-        bookingInfo.setTime(time.getSelectedItem().toString());
     }
 
     //function to retrieve starting station number
-    public int retrieveStationNumber(String name){
+    public void retrieveStationNumber(int num){
 
-        testStationName = name;
-
-        databaseReference.child("Stations").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                for(DataSnapshot stationName : dataSnapshot.getChildren()){
-                    if(testStationName.equals(stationName)){
-                        break;
-                    }else{
-                        stationNumber = stationNumber + 1;
-                    }
+        if (num == 1) {
+            databaseReference.child("Stations").child(bookingInfo.getStartingStation()).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    setStationNumber(dataSnapshot.getKey());
                 }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
 
-            }
-        });
+                }
+            });
+            databaseReference.child("Stations").addValueEventListener(new ValueEventListener() {
 
-        return stationNumber;
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                    for(DataSnapshot stationName : dataSnapshot.getChildren()){
+                        if(bookingInfo.getStartingStation().equals(stationName.getValue())){
+                            setStationNumber(stationName.getKey());
+                            break;
+                        }
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }else{
+            databaseReference.child("Stations").addValueEventListener(new ValueEventListener() {
+
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                    for(DataSnapshot stationName : dataSnapshot.getChildren()){
+                        if(bookingInfo.getEndStation().equals(stationName.getValue())){
+                            setStationNumber(stationName.getKey());
+                            break;
+                        }
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+
     }
-*/
+
     public String getStartStation() {
         return startStation;
     }
@@ -418,5 +456,13 @@ public class BookingActivity extends AppCompatActivity{
 
     public void setReceivedPinNumber(String receivedPinNumber) {
         this.receivedPinNumber = receivedPinNumber;
+    }
+
+    public String getStationNumber() {
+        return stationNumber;
+    }
+
+    public void setStationNumber(String stationNumber) {
+        this.stationNumber = stationNumber;
     }
 }
