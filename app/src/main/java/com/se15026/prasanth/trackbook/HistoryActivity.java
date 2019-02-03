@@ -3,13 +3,19 @@ package com.se15026.prasanth.trackbook;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
@@ -40,7 +46,7 @@ public class HistoryActivity extends AppCompatActivity {
         imageView = (ImageView) findViewById(R.id.qrImage);
         name = (TextView) findViewById(R.id.userNameHistory);
 
-        //databaseReference = FirebaseDatabase.getInstance().getReference().child("Bookings");
+        databaseReference = FirebaseDatabase.getInstance().getReference().child("Bookings");
 
         Bundle extras = getIntent().getExtras();
         if(extras != null){
@@ -49,20 +55,20 @@ public class HistoryActivity extends AppCompatActivity {
             setPhoneNumber(extras.getString("phoneNumber"));
         }
 
-        //retrieveData();//call function to retrieve bookings information from database
+        retrieveData();//call function to retrieve bookings information from database
 
-        //for(int i = 0; i<bookingList.size(); i++){
+        for(int i = 0; i<bookingList.size(); i++){
             MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
             try {
-                //BitMatrix bitMatrix = multiFormatWriter.encode(bookingList.get(i).toString(), BarcodeFormat.QR_CODE,800,800);
-                BitMatrix bitMatrix = multiFormatWriter.encode("Track Book", BarcodeFormat.QR_CODE,800,800);
+                BitMatrix bitMatrix = multiFormatWriter.encode(bookingList.get(i).toString(), BarcodeFormat.QR_CODE,800,800);
+                //BitMatrix bitMatrix = multiFormatWriter.encode("Track Book", BarcodeFormat.QR_CODE,800,800);
                 BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
                 Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);
                 imageView.setImageBitmap(bitmap);
             } catch (WriterException e) {
                 e.printStackTrace();
             }
-        //}
+        }
 
         backToHome();
     }
@@ -79,19 +85,29 @@ public class HistoryActivity extends AppCompatActivity {
             }
         });
     }
-/*
+
     //function to retrieve bookings information from database
     private void retrieveData(){
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                for(DataSnapshot data : dataSnapshot.getChildren()){
-                    if((data.child("PhoneNumber").getValue()).equals(getPhoneNumber())){
+                for(DataSnapshot data : dataSnapshot.getChildren())
+                    if ((data.child("PhoneNumber").getValue()).equals(getPhoneNumber())) {
                         BookingInfo bookingInfo = new BookingInfo();
+
+                        bookingInfo.setName((String) data.child("Name").getValue());
+                        bookingInfo.setPhoneNumber((String) data.child("PhoneNumber").getValue());
+                        bookingInfo.setStartingStation((String) data.child("StartStation").getValue());
+                        bookingInfo.setEndStation((String) data.child("EndStation").getValue());
+                        bookingInfo.setTime((String) data.child("Time").getValue());
+                        bookingInfo.setDate((String) data.child("Date").getValue());
+                        bookingInfo.setBookedClass((String) data.child("Class").getValue());
+                        bookingInfo.setSeat(Integer.parseInt(data.child("Seats").getValue().toString()));
+
                         bookingList.add(bookingInfo);
+                        Toast.makeText(getApplicationContext(), bookingInfo.toString(), Toast.LENGTH_SHORT).show();
                     }
-                }
             }
 
             @Override
@@ -100,7 +116,7 @@ public class HistoryActivity extends AppCompatActivity {
             }
         });
     }
-*/
+
     public String getPhoneNumber() {
         return phoneNumber;
     }

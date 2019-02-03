@@ -14,15 +14,15 @@ public class BookingInfo {
     public BookingInfo() {
     }
 
-    public BookingInfo(String startingStation, String endStation, String time, String date, String bookedClass, int seat, String name, String phoneNumber) {
+    public BookingInfo(String name, String phoneNumber, String startingStation, String endStation, String time, String date, String bookedClass, int seat) {
+        this.name = name;
+        this.phoneNumber = phoneNumber;
         this.startingStation = startingStation;
         this.endStation = endStation;
         this.time = time;
         this.date = date;
         this.bookedClass = bookedClass;
         this.seat = seat;
-        this.name = name;
-        this.phoneNumber = phoneNumber;
     }
 
     public String getStartingStation() {
