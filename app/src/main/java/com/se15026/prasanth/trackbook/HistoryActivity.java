@@ -29,11 +29,14 @@ public class HistoryActivity extends AppCompatActivity {
     private Button homeBtn;
     private ImageView imageView;
     private TextView name;
+    private TextView noTickets;
 
     private String phoneNumber;
     private String userName;
 
-    List<BookingInfo> bookingList = new ArrayList<>();
+    List<BookingInfo> bookingList;
+    BookingInfo bookingInfo = new BookingInfo();
+
 
     private DatabaseReference databaseReference;
 
@@ -45,6 +48,9 @@ public class HistoryActivity extends AppCompatActivity {
         homeBtn = (Button) findViewById(R.id.homeBtn);
         imageView = (ImageView) findViewById(R.id.qrImage);
         name = (TextView) findViewById(R.id.userNameHistory);
+        noTickets = (TextView) findViewById(R.id.noTicket);
+
+        bookingList = new ArrayList<BookingInfo>();
 
         databaseReference = FirebaseDatabase.getInstance().getReference().child("Bookings");
 
@@ -55,20 +61,49 @@ public class HistoryActivity extends AppCompatActivity {
             setPhoneNumber(extras.getString("phoneNumber"));
         }
 
-        retrieveData();//call function to retrieve bookings information from database
+        noTickets.setVisibility(View.INVISIBLE);
 
-        //for(int i = 0; i<bookingList.size(); i++){
-            MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
-            try {
-                //BitMatrix bitMatrix = multiFormatWriter.encode(bookingList.get(0).toString(), BarcodeFormat.QR_CODE,800,800);
-                BitMatrix bitMatrix = multiFormatWriter.encode("Track Book", BarcodeFormat.QR_CODE,800,800);
-                BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
-                Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);
-                imageView.setImageBitmap(bitmap);
-            } catch (WriterException e) {
-                e.printStackTrace();
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot data : dataSnapshot.getChildren())
+                    if ((data.child("PhoneNumber").getValue()).equals(getPhoneNumber())) {
+
+                        bookingInfo.setName((String) data.child("Name").getValue());
+                        bookingInfo.setPhoneNumber((String) data.child("PhoneNumber").getValue());
+                        bookingInfo.setStartingStation((String) data.child("StartStation").getValue());
+                        bookingInfo.setEndStation((String) data.child("EndStation").getValue());
+                        bookingInfo.setTime((String) data.child("Time").getValue());
+                        bookingInfo.setDate((String) data.child("Date").getValue());
+                        bookingInfo.setBookedClass((String) data.child("Class").getValue());
+                        bookingInfo.setSeat(Integer.parseInt(data.child("Seats").getValue().toString()));
+
+                        //bookingList.add(bookingInfo);
+
+                        MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
+                        BitMatrix bitMatrix;
+
+                        try {
+                            bitMatrix = multiFormatWriter.encode(bookingInfo.toString(), BarcodeFormat.QR_CODE,800,800);
+                            BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
+                            Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);
+                            imageView.setImageBitmap(bitmap);
+                        } catch (WriterException e) {
+                            e.printStackTrace();
+                        }
+
+                        break;
+
+                    }
+
             }
-        //}
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
         backToHome();
     }
@@ -82,37 +117,6 @@ public class HistoryActivity extends AppCompatActivity {
                 intent.putExtra("loginName", getUserName());
                 intent.putExtra("loginNumber", getPhoneNumber());
                 startActivity(intent);
-            }
-        });
-    }
-
-    //function to retrieve bookings information from database
-    private void retrieveData(){
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                for(DataSnapshot data : dataSnapshot.getChildren())
-                    if ((data.child("PhoneNumber").getValue()).equals(getPhoneNumber())) {
-                        BookingInfo bookingInfo = new BookingInfo();
-
-                        bookingInfo.setName((String) data.child("Name").getValue());
-                        bookingInfo.setPhoneNumber((String) data.child("PhoneNumber").getValue());
-                        bookingInfo.setStartingStation((String) data.child("StartStation").getValue());
-                        bookingInfo.setEndStation((String) data.child("EndStation").getValue());
-                        bookingInfo.setTime((String) data.child("Time").getValue());
-                        bookingInfo.setDate((String) data.child("Date").getValue());
-                        bookingInfo.setBookedClass((String) data.child("Class").getValue());
-                        bookingInfo.setSeat(Integer.parseInt(data.child("Seats").getValue().toString()));
-
-                        bookingList.add(bookingInfo);
-
-                    }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
             }
         });
     }
