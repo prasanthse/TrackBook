@@ -47,6 +47,8 @@ public class BookingActivity extends AppCompatActivity{
     private RadioGroup radioGroup;
     private RadioButton radioButton;
 
+    private Button temperoryBtn;//This is a temperory one and it will remove after succesfully retrieve time
+
     private DatabaseReference databaseReference;
 
     private List<String> stationsList;
@@ -65,7 +67,14 @@ public class BookingActivity extends AppCompatActivity{
 
     private static final String TAG = "BookingActivity";
 
-    private String stationNumber;
+    private String startStationNumber;
+    private String endStationNumber;
+
+    private String userName;
+    private String userPhoneNumber;
+    private String from;
+    private String to;
+    private Boolean enableTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,9 +93,15 @@ public class BookingActivity extends AppCompatActivity{
         radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
         name = (TextView) findViewById(R.id.userNameBooking);
 
+        temperoryBtn = (Button) findViewById(R.id.temperoryBtn);
+
         Bundle extras = getIntent().getExtras();
         if(extras != null){
             name.setText(extras.getString("userName"));
+
+            setUserName(extras.getString("userName"));
+            setUserPhoneNumber(extras.getString("phoneNumber"));
+
             bookingInfo.setName(name.getText().toString().trim());
             bookingInfo.setPhoneNumber(extras.getString("phoneNumber"));
         }
@@ -100,10 +115,56 @@ public class BookingActivity extends AppCompatActivity{
         seatAmount.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         seats.setAdapter(seatAmount);
 
+        setEnableTime(false);
+
         //time.setEnabled(false);
+
+        selectStations();
 
         bookingLinks();//call function to call all the relevant onclick functions
 
+    }
+
+    public void selectStations(){
+        start.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                start.setSelection(position);
+                String text = parent.getItemAtPosition(position).toString();
+                setFrom(text);
+
+                retrieveStationNumber(1);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        end.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                end.setSelection(position);
+                String text = parent.getItemAtPosition(position).toString();
+                setTo(text);
+
+                retrieveStationNumber(2);
+
+                stationValidation();//call function to check whether the start and end station are same or different
+
+                if(getEnableTime()){
+                    bookingInfo.setEndStation(getTo());
+                    bookingInfo.setStartingStation(getFrom());
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
     //call function to call all the relevant onclick functions
@@ -136,47 +197,24 @@ public class BookingActivity extends AppCompatActivity{
             public void onClick(View v) {
                 int confirmation = 0;
                 Intent intent = new Intent(BookingActivity.this, HomeActivity.class);
-                intent.putExtra("loginName", bookingInfo.getName());
-                intent.putExtra("loginNumber", bookingInfo.getPhoneNumber());
+                intent.putExtra("loginName", getUserName());
+                intent.putExtra("loginNumber", getUserPhoneNumber());
                 createAlertBox("Are you sure to cancel submit?", "Your Booking was canceled", intent, confirmation);
             }
         });
 
-        start.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        temperoryBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                start.setSelection(position);
-                String text = parent.getItemAtPosition(position).toString();
-                bookingInfo.setStartingStation(text);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-        end.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                end.setSelection(position);
-                String text = parent.getItemAtPosition(position).toString();
-                bookingInfo.setEndStation(text);
-
-                //stationValidation();//call function to check whether the start and end station are same or different
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
+            public void onClick(View v) {
+                toastMessage("retrieve time is not finished");
+                toastMessage("Time is fixed to 06:10AM until fix the error");
             }
         });
 
         time.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                //time.setSelection(position);
-                //String text = parent.getItemAtPosition(position).toString();
+                Toast.makeText(getApplicationContext(), "This is not finished yet. So time is fixed to 06:10AM", Toast.LENGTH_LONG).show();
                 bookingInfo.setTime("06:10AM");
             }
 
@@ -294,8 +332,13 @@ public class BookingActivity extends AppCompatActivity{
 
                 stationAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, stationsList);
                 stationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
                 start.setAdapter(stationAdapter);
                 end.setAdapter(stationAdapter);
+
+                setstartStationNumber("1");
+                setEndStationNumber("1");
+
             }
 
             @Override
@@ -314,10 +357,12 @@ public class BookingActivity extends AppCompatActivity{
     //function to check whether the start and end station are same or different
     public void stationValidation(){
 
-        if(bookingInfo.getStartingStation().equals(bookingInfo.getEndStation())){
+        if(getFrom().equals(getTo())){
+            setEnableTime(false);
             toastMessage("Please make sure you select two different stations");
         }else{
-            retrieveTime();//call function to retrieve time table
+            setEnableTime(true);
+            //retrieveTime();//call function to retrieve time table
         }
     }
 
@@ -338,14 +383,7 @@ public class BookingActivity extends AppCompatActivity{
     //function to retrieve time table
     public void retrieveTime(){
 
-        retrieveStationNumber(1);
-        String startNumber = getStationNumber();
-        toastMessage(startNumber);
-
-        retrieveStationNumber(2);
-        String endNumber = getStationNumber();
-
-        databaseReference.child("Time").child(startNumber).child(endNumber).addValueEventListener(new ValueEventListener() {
+        databaseReference.child("Time").child(getstartStationNumber()).child(getEndStationNumber()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -353,6 +391,10 @@ public class BookingActivity extends AppCompatActivity{
                     String timeSlot = time.getValue(String.class);
                     timeList.add(timeSlot);
                 }
+
+                ArrayAdapter<String> timeAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1, timeList);
+                timeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                time.setAdapter(timeAdapter);
             }
 
             @Override
@@ -361,67 +403,58 @@ public class BookingActivity extends AppCompatActivity{
             }
         });
 
-        time.setEnabled(true);
+    }
 
-        ArrayAdapter<String> timeAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1, timeList);
-        timeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        time.setAdapter(timeAdapter);
+    public void setStartStation(){
+
+        databaseReference.child("Stations").addValueEventListener(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot stationName : dataSnapshot.getChildren()){
+                    if(getFrom().equals(stationName.getValue())){
+                        setstartStationNumber(stationName.getKey());
+                    }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void setEndStation(){
+        databaseReference.child("Stations").addValueEventListener(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot stationName : dataSnapshot.getChildren()){
+                    if(getTo().equals(stationName.getValue())){
+                        setEndStationNumber(stationName.getKey());
+                    }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     //function to retrieve starting station number
     public void retrieveStationNumber(int num){
 
         if (num == 1) {
-            databaseReference.child("Stations").child(bookingInfo.getStartingStation()).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    setStationNumber(dataSnapshot.getKey());
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
-            databaseReference.child("Stations").addValueEventListener(new ValueEventListener() {
-
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                    for(DataSnapshot stationName : dataSnapshot.getChildren()){
-                        if(bookingInfo.getStartingStation().equals(stationName.getValue())){
-                            setStationNumber(stationName.getKey());
-                            break;
-                        }
-                    }
-
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
+            setStartStation();
         }else{
-            databaseReference.child("Stations").addValueEventListener(new ValueEventListener() {
-
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                    for(DataSnapshot stationName : dataSnapshot.getChildren()){
-                        if(bookingInfo.getEndStation().equals(stationName.getValue())){
-                            setStationNumber(stationName.getKey());
-                            break;
-                        }
-                    }
-
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
+            setEndStation();
         }
 
     }
@@ -458,11 +491,59 @@ public class BookingActivity extends AppCompatActivity{
         this.receivedPinNumber = receivedPinNumber;
     }
 
-    public String getStationNumber() {
-        return stationNumber;
+    public String getstartStationNumber() {
+        return startStationNumber;
     }
 
-    public void setStationNumber(String stationNumber) {
-        this.stationNumber = stationNumber;
+    public void setstartStationNumber(String startStationNumber) {
+        this.startStationNumber = startStationNumber;
+    }
+
+    public String getEndStationNumber() {
+        return endStationNumber;
+    }
+
+    public void setEndStationNumber(String endStationNumber) {
+        this.endStationNumber = endStationNumber;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getUserPhoneNumber() {
+        return userPhoneNumber;
+    }
+
+    public void setUserPhoneNumber(String userPhoneNumber) {
+        this.userPhoneNumber = userPhoneNumber;
+    }
+
+    public String getFrom() {
+        return from;
+    }
+
+    public void setFrom(String from) {
+        this.from = from;
+    }
+
+    public String getTo() {
+        return to;
+    }
+
+    public void setTo(String to) {
+        this.to = to;
+    }
+
+    public Boolean getEnableTime() {
+        return enableTime;
+    }
+
+    public void setEnableTime(Boolean enableTime) {
+        this.enableTime = enableTime;
     }
 }
