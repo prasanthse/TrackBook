@@ -124,9 +124,7 @@ public class HomeActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "Scan cancelled", Toast.LENGTH_SHORT).show();
             }
             else{
-                Toast.makeText(getApplicationContext(), intentResult.getContents(), Toast.LENGTH_LONG).show();
-                //Intent intent = new Intent(HomeActivity.this, QrScanActivity.class);
-                //startActivity(intent);
+                ticketInfo(intentResult.getContents());
             }
         }else{
             super.onActivityResult(requestCode, resultCode, data);
@@ -147,5 +145,28 @@ public class HomeActivity extends AppCompatActivity {
 
     public void setUserPhoneNumber(String userPhoneNumber) {
         this.userPhoneNumber = userPhoneNumber;
+    }
+
+    //function to create alert box
+    public void ticketInfo(String ticket){
+        AlertDialog.Builder alert = new AlertDialog.Builder(HomeActivity.this);
+        alert.setTitle("Ticket Details");
+        alert.setMessage(ticket);
+
+        alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
+        alert.setNegativeButton("", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
+        alert.create().show();
     }
 }
