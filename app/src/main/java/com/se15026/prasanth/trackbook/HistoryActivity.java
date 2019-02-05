@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -23,6 +22,7 @@ import com.google.zxing.common.BitMatrix;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class HistoryActivity extends AppCompatActivity {
 
@@ -33,7 +33,7 @@ public class HistoryActivity extends AppCompatActivity {
     private String phoneNumber;
     private String userName;
 
-    private ArrayList<BookingInfo> bookingList = new ArrayList<>();
+    List<BookingInfo> bookingList = new ArrayList<>();
 
     private DatabaseReference databaseReference;
 
@@ -57,18 +57,18 @@ public class HistoryActivity extends AppCompatActivity {
 
         retrieveData();//call function to retrieve bookings information from database
 
-        for(int i = 0; i<bookingList.size(); i++){
+        //for(int i = 0; i<bookingList.size(); i++){
             MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
             try {
-                BitMatrix bitMatrix = multiFormatWriter.encode(bookingList.get(i).toString(), BarcodeFormat.QR_CODE,800,800);
-                //BitMatrix bitMatrix = multiFormatWriter.encode("Track Book", BarcodeFormat.QR_CODE,800,800);
+                //BitMatrix bitMatrix = multiFormatWriter.encode(bookingList.get(0).toString(), BarcodeFormat.QR_CODE,800,800);
+                BitMatrix bitMatrix = multiFormatWriter.encode("Track Book", BarcodeFormat.QR_CODE,800,800);
                 BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
                 Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);
                 imageView.setImageBitmap(bitmap);
             } catch (WriterException e) {
                 e.printStackTrace();
             }
-        }
+        //}
 
         backToHome();
     }
@@ -106,7 +106,7 @@ public class HistoryActivity extends AppCompatActivity {
                         bookingInfo.setSeat(Integer.parseInt(data.child("Seats").getValue().toString()));
 
                         bookingList.add(bookingInfo);
-                        Toast.makeText(getApplicationContext(), bookingInfo.toString(), Toast.LENGTH_SHORT).show();
+
                     }
             }
 
